@@ -1,0 +1,16 @@
+.idea
+.git
+.gitignore
+LICENSE
+VERSION
+README.md
+Changelog.md
+Makefile
+docs
+logs
+media
+venv
+.env
+.venv
+*.sqlite3
+**/.env
