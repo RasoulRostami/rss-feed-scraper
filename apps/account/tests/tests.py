@@ -13,7 +13,6 @@ User = get_user_model()
 fake = Faker()
 
 
-# TODO check retrive and update schema
 class SignUpTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
@@ -100,7 +99,7 @@ class UpdateUserInfoTest(APITestCase):
         response = self.client.patch(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_update_first_name_last_name(self):
+    def test_update_first_name_last_name_and_schema(self):
         data = {'first_name': fake.first_name(), 'last_name': fake.last_name()}
         self.client.force_login(self.user)
         response = self.client.patch(self.url, data)
@@ -126,7 +125,7 @@ class UpdateUserInfoTest(APITestCase):
         response = self.client.patch(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_confirm_password(self):
+    def test_confirm_password_is_required(self):
         password = fake.password()
         data = {'password': password}
         self.client.force_login(self.user)
@@ -144,7 +143,7 @@ class UserInfoTest(APITestCase):
         response = self.client.patch(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_update_first_name_last_name(self):
+    def test_schema(self):
         self.client.force_login(self.user)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

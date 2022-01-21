@@ -22,7 +22,6 @@ class CreateAccountSerializer(AccountSerializer):
     confirm_password = serializers.CharField(required=True, allow_null=True, write_only=True)
 
     class Meta(AccountSerializer.Meta):
-        fields = AccountSerializer.Meta.fields
         extra_kwargs = {'password': {'write_only': True}, 'id': {'read_only': True}}
 
     def validate(self, data):
@@ -32,8 +31,7 @@ class CreateAccountSerializer(AccountSerializer):
         return data
 
     def create(self, validated_data):
-        password = validated_data['password']
-        del validated_data['password']
+        password = validated_data.pop('password')
         user = User()
         for key, value in validated_data.items():
             setattr(user, key, value)
@@ -53,8 +51,7 @@ class UpdateAccountSerializer(AccountSerializer):
 
     def update(self, instance, validated_data):
         if validated_data.get('password'):
-            password = validated_data['password']
-            del validated_data['password']
+            password = validated_data.pop('password')
             user = super().update(instance, validated_data)
             user.set_password(password)
             user.save()
