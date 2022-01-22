@@ -40,6 +40,7 @@ DJANGO_APP = [
     # third packages
     'drf_yasg',
     'rest_framework_simplejwt',
+    'django_filters',
 ]
 MY_APPS = [
     'apps.account.apps.AccountConfig',
@@ -136,10 +137,19 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'helper.pagination.StandardResultsSetPagination',
 }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(os.environ.get('ACCESS_TOKEN_LIFETIME_MINUTES', 5))),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=int(os.environ.get('REFRESH_TOKEN_LIFETIME_DAYS', 1))),
+}
+
+# Swagger
+SWAGGER_SETTINGS = {
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'helper.swagger.CompoundTagsSchema',
 }
