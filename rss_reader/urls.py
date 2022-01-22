@@ -40,4 +40,5 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('api/v1/account/', include('apps.account.urls', namespace='account')),
+    path('api/v1/rss/', include('apps.rss.urls', namespace='rss')),
 ]
