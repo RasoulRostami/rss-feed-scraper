@@ -14,7 +14,7 @@ from .serializers import AccountSerializer, CreateAccountSerializer, UpdateAccou
 User = get_user_model()
 
 
-class AccountViewSet(GetCustomSerializerClass, GenericViewSet):
+class AccountView(GetCustomSerializerClass, GenericViewSet):
     queryset = User.objects.all()
     serializer_class = AccountSerializer
     update_serializer_class = UpdateAccountSerializer
