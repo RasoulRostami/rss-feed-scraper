@@ -17,7 +17,7 @@ class RSSFeedFollowerAdmin(BaseAdminModel):
 
 @register(Entry)
 class EntryAdmin(BaseAdminModel):
-    list_display = ('title', 'title', 'url')
+    list_display = ('title', 'url')
 
 
 @register(SeenEntry)
