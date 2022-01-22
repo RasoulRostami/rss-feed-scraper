@@ -53,11 +53,11 @@ class RSSFeed(BaseModel):
 
     def follow(self, user):
         if not self.is_followed_by_user(user):
-            self.followrs.add(user)
+            self.followers.add(user)
 
     def unfollow(self, user):
         if self.is_followed_by_user(user):
-            self.followrs.remove(user)
+            self.followers.remove(user)
 
 
 class RSSFeedFollower(BaseModel):

@@ -24,13 +24,12 @@ from .serializers import (
 from .services import RSSFeedService, EntryService
 
 
-# TODO : test
 class RSSFeedView(GetCustomSerializerClass, ListModelMixin, CreateModelMixin, GenericViewSet):
-    queryset = RSSFeed.active_objects.all()
+    queryset = RSSFeed.objects.all()
     serializer_class = RSSFeedSerializer
     create_serializer_class = RSSFeedCreateSerializer
     filter_backends = (SearchFilter, DjangoFilterBackend)
-    search_fields = ('title', 'link', 'description')
+    search_fields = ('title', 'feed_url')
     filterset_class = RSSFeedFilter
 
     @swagger_auto_schema(request_body=RSSFeedCreateSerializer(), responses={status.HTTP_200_OK: RSSFeedCreateSerializer()})
@@ -69,7 +68,7 @@ class RSSFeedView(GetCustomSerializerClass, ListModelMixin, CreateModelMixin, Ge
         - patch: **Follow** RSS Feed
         - delete: **Unfollow** RSS Feed
         """
-        serializer = self.get_serializer(request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         feed = serializer.validated_data['feed']
         if request.method == "PATCH":
@@ -105,7 +104,7 @@ class EntryView(NestedViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericV
         - patch: **Add bookmark**
         - delete: **Remove bookmark**
         """
-        serializer = self.get_serializer(request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         entry = serializer.validated_data['entry']
         if request.method == "PATCH":
@@ -124,7 +123,7 @@ class EntryView(NestedViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericV
         - patch: **Add favourite**
         - delete: **Remove favourite**
         """
-        serializer = self.get_serializer(request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         entry = serializer.validated_data['entry']
         if request.method == "PATCH":

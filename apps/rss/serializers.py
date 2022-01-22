@@ -31,7 +31,7 @@ class RSSFeedSerializer(serializers.ModelSerializer):
         return rss_feed.is_followed_by_user(self.context['request'].user)
 
     def get_number_of_unseen_entries(self, rss_feed):
-        if rss_feed.is_followed_by_user(self.context['request'].user):
+        if not rss_feed.is_followed_by_user(self.context['request'].user):
             return 0
         return rss_feed.unseen_entries_count_for_user(self.context['request'].user)
 
@@ -43,7 +43,7 @@ class RSSFeedCreateSerializer(serializers.Serializer):
 
 
 class RSSFeedFollowSerializer(serializers.Serializer):
-    feed = serializers.PrimaryKeyRelatedField(queryset=RSSFeed.objects.all(), required=True)
+    feed_id = serializers.PrimaryKeyRelatedField(queryset=RSSFeed.objects.all(), required=True, source='feed')
 
 
 class EntrySerializer(serializers.ModelSerializer):
