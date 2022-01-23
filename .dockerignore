@@ -16,3 +16,7 @@ venv
 **/.env
 Dockerfile
 docker-compose.yml
+celerybeat-schedule
+htmlcov/
+coverage
+.coverage.*

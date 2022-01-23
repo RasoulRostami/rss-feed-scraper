@@ -33,6 +33,12 @@ entry_comment_schema = {
     'body': {'type': 'string', 'required': True, 'nullable': False},
 }
 
+feed_schema_after_create = {
+    'feed_url': {'type': 'string', 'required': True, 'nullable': False},
+    'message': {'type': 'string', 'required': True, 'nullable': False},
+    'rss_feed': {'type': 'dict', 'required': True, 'nullable': True, 'schema': rss_feed_schema},
+}
+
 rss_feed_list_schema = generate_list_schema_schema(rss_feed_schema)
 entry_list_schema = generate_list_schema_schema(entry_schema)
 entry_comment_list_schema = generate_list_schema_schema(entry_comment_schema)

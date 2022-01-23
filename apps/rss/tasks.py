@@ -10,6 +10,6 @@ User = get_user_model()
 
 @shared_task
 def update_feeds(*args, **kwargs):
-    for feed in RSSFeed.objects.filter(next_check__lte=timezone.now()):
+    for feed in RSSFeed.active_objects.filter(next_check__lte=timezone.now()):
         rss_service = RSSFeedService()
         rss_service.update(feed, EntryService().create_or_update)
