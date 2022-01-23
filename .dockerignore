@@ -20,3 +20,4 @@ celerybeat-schedule
 htmlcov/
 coverage
 .coverage.*
+.converagerc
