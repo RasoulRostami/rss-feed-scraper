@@ -57,3 +57,10 @@ class UpdateAccountSerializer(AccountSerializer):
             user.save()
             return user
         return super().update(instance, validated_data)
+
+
+class UserReadOnlySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name')
+        read_ony = True

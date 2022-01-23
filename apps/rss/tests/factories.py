@@ -1,6 +1,7 @@
 from factory import fuzzy, django, Faker, SubFactory
 
-from ..models import RSSFeed, Entry
+from apps.account.tests.factories import UserFactory
+from ..models import RSSFeed, Entry, EntryComment
 
 
 class RSSFeedFactory(django.DjangoModelFactory):
@@ -27,3 +28,12 @@ class EntryFactory(django.DjangoModelFactory):
     guid = Faker('url')
     content = Faker('text')
     publish_date = Faker('date_time')
+
+
+class EntryCommentFactory(django.DjangoModelFactory):
+    class Meta:
+        model = EntryComment
+
+    entry = SubFactory(EntryFactory)
+    user = SubFactory(UserFactory)
+    body = Faker('text')

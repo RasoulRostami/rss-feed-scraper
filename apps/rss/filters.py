@@ -21,7 +21,7 @@ class EntryFilter(django_filters.FilterSet):
 
     class Meta:
         model = Entry
-        fields = ('is_bookmarked', 'is_favourited', 'is_seen')
+        fields = ('is_bookmarked', 'is_favourited', 'is_seen', 'feed_id')
 
     def get_is_bookmarked(self, queryset, name, value):
         return queryset.filter(id__in=BookmarkedEntry.objects.filter(user=self.request.user).values_list('entry_id', flat=True))

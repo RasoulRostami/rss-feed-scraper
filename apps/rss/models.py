@@ -102,23 +102,23 @@ class Entry(BaseModel):
         return f"{self.title} - {self.url}"
 
     def seen(self, user):
-        if not self.seen_users.filter(id=user.id):
+        if not self.seen_users.filter(id=user.id).exists():
             self.seen_users.add(user)
 
     def add_bookmark(self, user):
-        if not self.bookmark_users.filter(id=user.id):
+        if not self.bookmark_users.filter(id=user.id).exists():
             self.bookmark_users.add(user)
 
     def add_favourite(self, user):
-        if not self.favourite_users.filter(id=user.id):
+        if not self.favourite_users.filter(id=user.id).exists():
             self.favourite_users.add(user)
 
     def remove_bookmark(self, user):
-        if self.bookmark_users.filter(id=user.id):
+        if self.bookmark_users.filter(id=user.id).exists():
             self.bookmark_users.remove(user)
 
     def remove_favourite(self, user):
-        if self.favourite_users.filter(id=user.id):
+        if self.favourite_users.filter(id=user.id).exists():
             self.favourite_users.remove(user)
 
 

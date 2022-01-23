@@ -97,7 +97,7 @@ class EntryView(NestedViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericV
     @swagger_auto_schema(
         methods=['patch', 'delete'], request_body=EntryBookmarkSerializer(), responses={status.HTTP_200_OK: None}
     )
-    @action(detail=False, methods=['patch', 'delete'], serializer_class=RSSFeedFollowSerializer)
+    @action(detail=False, methods=['patch', 'delete'], serializer_class=EntryBookmarkSerializer)
     def bookmark(self, request, *args, **kwargs):
         """
         ## Add entry to bookmark / Remove entry from bookmark
@@ -116,7 +116,7 @@ class EntryView(NestedViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericV
     @swagger_auto_schema(
         methods=['patch', 'delete'], request_body=EntryFavouriteSerializer(), responses={status.HTTP_200_OK: None}
     )
-    @action(detail=False, methods=['patch', 'delete'], serializer_class=RSSFeedFollowSerializer)
+    @action(detail=False, methods=['patch', 'delete'], serializer_class=EntryFavouriteSerializer)
     def favourite(self, request, *args, **kwargs):
         """
         ## Add entry to favourites / Remove entry from favourites
@@ -127,9 +127,9 @@ class EntryView(NestedViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericV
         serializer.is_valid(raise_exception=True)
         entry = serializer.validated_data['entry']
         if request.method == "PATCH":
-            entry.add_bookmark(request.user)
+            entry.add_favourite(request.user)
         elif request.method == "DELETE":
-            entry.remove_bookmark(request.user)
+            entry.remove_favourite(request.user)
         return Response(status=status.HTTP_200_OK)
 
 

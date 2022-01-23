@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import RSSFeed, Entry, EntryComment
+from ..account.serializers import UserReadOnlySerializer
 
 
 class RSSFeedSerializer(serializers.ModelSerializer):
@@ -47,6 +48,9 @@ class RSSFeedFollowSerializer(serializers.Serializer):
 
 
 class EntrySerializer(serializers.ModelSerializer):
+    is_bookmarked = serializers.SerializerMethodField()
+    is_favourited = serializers.SerializerMethodField()
+
     class Meta:
         model = Entry
         fields = (
@@ -57,20 +61,30 @@ class EntrySerializer(serializers.ModelSerializer):
             'guid',
             'content',
             'publish_date',
+            'is_bookmarked',
+            'is_favourited',
         )
         read_only = True
 
+    def get_is_bookmarked(self, entry):
+        return entry.bookmark_users.filter(id=self.context['request'].user.id).exists()
+
+    def get_is_favourited(self, entry):
+        return entry.favourite_users.filter(id=self.context['request'].user.id).exists()
+
 
 class EntryBookmarkSerializer(serializers.Serializer):
-    entry = serializers.PrimaryKeyRelatedField(queryset=Entry.objects.all(), required=True)
+    entry_id = serializers.PrimaryKeyRelatedField(queryset=Entry.objects.all(), required=True, source='entry')
 
 
 class EntryFavouriteSerializer(serializers.Serializer):
-    entry = serializers.PrimaryKeyRelatedField(queryset=Entry.objects.all(), required=True)
+    entry_id = serializers.PrimaryKeyRelatedField(queryset=Entry.objects.all(), required=True, source='entry')
 
 
 class EntryCommentSerializer(serializers.ModelSerializer):
     entry_id = serializers.PrimaryKeyRelatedField(queryset=Entry.objects.all(), required=True, source='entry')
+    user_id = serializers.HiddenField(default=serializers.CurrentUserDefault(), source='user', write_only=True)
+    user = UserReadOnlySerializer(read_only=True)
 
     class Meta:
         model = EntryComment
@@ -79,5 +93,6 @@ class EntryCommentSerializer(serializers.ModelSerializer):
             'entry_id',
             'user_id',
             'body',
+            'user',
         )
         extra_kwargs = {'user_id': {'read_only': True}}
