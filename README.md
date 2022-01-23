@@ -25,7 +25,9 @@ This is a simple RSS scraper Django application, Users can follow multiple feeds
 pull the git repository
 
 ```bash
-
+https://github.com/RasoulRostami/rss-feed-scraper.git
+cd rss-feed-scraper
+cp rss_reader/.env-example rss_reader/.ee
 ```
 
 Create custom `.env` file for environment variables. you can copy `env-example` and file you own values
