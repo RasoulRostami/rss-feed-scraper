@@ -97,7 +97,7 @@ class UpdateUserInfoTest(APITestCase):
 
     def test_is_authenticated(self):
         response = self.client.patch(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_update_first_name_last_name_and_schema(self):
         data = {'first_name': fake.first_name(), 'last_name': fake.last_name()}
@@ -141,7 +141,7 @@ class UserInfoTest(APITestCase):
 
     def test_is_authenticated(self):
         response = self.client.patch(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_schema(self):
         self.client.force_login(self.user)
