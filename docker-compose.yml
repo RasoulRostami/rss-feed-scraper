@@ -15,7 +15,7 @@ services:
   redis:
     image: redis:6
     ports:
-    - 6379:6379
+      - 6379:6379
     container_name: rss_redis
 
   backend:
@@ -30,9 +30,34 @@ services:
     volumes:
       - .:/app
     container_name: rss_backend
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python3 manage.py migrate &&
+             python3 manage.py runserver 0.0.0.0:8000"
 
+  celery:
+    build: .
+    command: celery -A rss_reader worker -l info
+    container_name: rss_celery
+    volumes:
+      - .:/app
+    env_file:
+      - rss_reader/.env
+    depends_on:
+      - db
+      - redis
+      - backend
 
+  celery-beat:
+    build: .
+    command: celery -A rss_reader beat -l info
+    container_name: rss_celery_beat
+    volumes:
+      - .:/app
+    env_file:
+      - rss_reader/.env
+    depends_on:
+      - db
+      - redis
 
 volumes:
   postgres_data:

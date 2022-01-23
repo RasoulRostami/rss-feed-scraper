@@ -154,12 +154,12 @@ SWAGGER_SETTINGS = {
     'DEFAULT_AUTO_SCHEMA_CLASS': 'helper.swagger.CompoundTagsSchema',
 }
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get('REDIS_LOCATION'),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
+CELERY_BROKER_URL = "redis://" + os.environ.get("REDIS_LOCATION")
+CELERY_RESULT_BACKEND = "redis://" + os.environ.get("REDIS_LOCATION")
+
+CELERY_BEAT_SCHEDULE = {
+    'update-rss-feeds': {
+        'task': 'apps.rss.tasks.update_feeds',
+        'schedule': os.environ.get("UPDATE_RSS_FEED_PERIOD", 1800)  # second
+    },
 }

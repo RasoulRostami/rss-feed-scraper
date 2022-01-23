@@ -17,6 +17,8 @@ class ActiveRSSFeedManager(models.Manager):
 
 
 class RSSFeed(BaseModel):
+    ERROR_LIMIT = 20
+
     title = models.CharField(max_length=150, help_text="Title of the feed")
     feed_url = models.TextField(validators=[URLValidator()], unique=True, help_text="Link of the feed")
     description = models.TextField(help_text="Description of the feed")
@@ -42,8 +44,8 @@ class RSSFeed(BaseModel):
         return f"{self.title} - {self.feed_url}"
 
     @classmethod
-    def calculate_next_check(cls):
-        return timezone.now() + timedelta(hours=1)
+    def calculate_next_check(cls, hours=1):
+        return timezone.now() + timedelta(hours=hours)
 
     def is_followed_by_user(self, user) -> bool:
         return self.followers.filter(id=user.id).exists()
@@ -58,6 +60,15 @@ class RSSFeed(BaseModel):
     def unfollow(self, user):
         if self.is_followed_by_user(user):
             self.followers.remove(user)
+
+    def deactivate(self):
+        self.is_active = False
+        self.save()
+
+    def increase_number_of_error(self):
+        self.number_of_errors = self.number_of_errors + 1
+        self.next_check = self.calculate_next_check(self.number_of_errors)
+        self.save()
 
 
 class RSSFeedFollower(BaseModel):

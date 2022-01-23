@@ -9,7 +9,7 @@ from .models import RSSFeed, Entry
 
 class RSSFeedService:
     def create(self, feed_url, create_or_update_entries_function=None):
-        feed_parser = feedparser.parse(feed_url)
+        feed_parser = self._parse_feed_url(feed_url)
 
         if not self._is_valid(feed_parser):
             raise InvalidFeedURL
@@ -21,6 +21,26 @@ class RSSFeedService:
                 create_or_update_entries_function(rss_feed, feed_parser.entries)
 
             return rss_feed
+
+    def update(self, rss_feed: RSSFeed, create_or_update_entries_function):
+        feed_parser = self._parse_feed_url(rss_feed.feed_url)
+        rss_feed.last_status = feed_parser.status
+        rss_feed.last_checked = timezone.now()
+
+        if feed_parser.status != 200:
+            if rss_feed.number_of_errors >= RSSFeed.ERROR_LIMIT:
+                rss_feed.deactivate()
+            else:
+                rss_feed.increase_number_of_error()
+        else:
+            create_or_update_entries_function(rss_feed, feed_parser.entries)
+            rss_feed.number_of_errors = 0  # reset errors
+            rss_feed.next_check = RSSFeed.calculate_next_check()
+            rss_feed.save()
+
+    @staticmethod
+    def _parse_feed_url(feed_url):
+        return feedparser.parse(feed_url)
 
     @staticmethod
     def _is_valid(feed_parser):
@@ -54,11 +74,8 @@ class RSSFeedService:
 
 
 class EntryService:
-    def create_or_update(self, rss_feed: RSSFeed, entries=None):
+    def create_or_update(self, rss_feed: RSSFeed, entries):
         get_query = dict()
-        if entries is None:
-            entries = feedparser.parse(rss_feed.feed_url).entries
-
         for row in entries:
             if hasattr(row, 'link'):
                 get_query['url'] = row.link
