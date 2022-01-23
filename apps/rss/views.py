@@ -6,7 +6,6 @@ from rest_framework.filters import SearchFilter
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from helper.drf import GetCustomSerializerClass
 from .exceptions import InvalidFeedURL
@@ -78,7 +77,7 @@ class RSSFeedView(GetCustomSerializerClass, ListModelMixin, CreateModelMixin, Ge
         return Response(status=status.HTTP_200_OK)
 
 
-class EntryView(NestedViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet):
+class EntryView(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Entry.objects.all()
     serializer_class = EntrySerializer
     filter_backends = (DjangoFilterBackend,)

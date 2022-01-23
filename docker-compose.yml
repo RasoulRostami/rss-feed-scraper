@@ -12,6 +12,12 @@ services:
       - POSTGRES_PASSWORD=postgres
     container_name: rss_db
 
+  redis:
+    image: redis:6
+    ports:
+    - 6379:6379
+    container_name: rss_redis
+
   backend:
     build: .
     ports:
@@ -20,10 +26,13 @@ services:
       - rss_reader/.env
     depends_on:
       - db
+      - redis
     volumes:
       - .:/app
     container_name: rss_backend
     command: python manage.py runserver 0.0.0.0:8000
+
+
 
 volumes:
   postgres_data:

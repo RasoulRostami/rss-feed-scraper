@@ -5,10 +5,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-#COPY requirements/ ./requirements/
-#RUN pip install --upgrade pip && pip install -r requirements/dev.txt
-COPY req.txt .
-RUN pip install -r req.txt
+COPY requirements/ ./requirements/
+RUN pip install --upgrade pip && pip install -r requirements/dev.txt
 
 COPY . .
 
